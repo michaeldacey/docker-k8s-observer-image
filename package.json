@@ -1,0 +1,14 @@
+{
+  "name": "k8s-pod-service",
+  "version": "1.0.0",
+  "description": "Webservice to run in a Kubernetes pod",
+  "main": "service.js",
+  "scripts": {
+    "build": "./node_modules/.bin/tsc -p ./tsconfig.service.json",
+    "start": "node ./service.js"
+  },
+  "author": "Mike Dacey",
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {}
+}

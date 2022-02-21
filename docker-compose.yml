@@ -1,0 +1,21 @@
+version: "3.6"
+services:
+  k8s-observer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: k8s-observer
+    restart: always
+    ports: 
+      - "86:1340"
+    networks: 
+      - dbnetwork
+  k8s-pod:
+    image: mikeduwtsd/k8s-pod
+    restart: always
+    ports: 
+      - "1339:1339"
+    networks: 
+      - dbnetwork       
+networks:
+    dbnetwork:

@@ -9,6 +9,7 @@ apt-get install -y software-properties-common && \
 apt-get install -y --no-install-recommends apt-utils && \
 apt-get install -y curl \
 wget
+RUN apt-get install -y sudo
 RUN echo "export SERVER_IP_ADDRESS='0.0.0.0'" >> /etc/profile
 RUN apt-get clean
 
@@ -16,10 +17,10 @@ RUN apt-get clean
 FROM developer-os as nodeenv
 MAINTAINER mike <michael.dacey@uwtsd.ac.uk>
 WORKDIR /var/www/node
-RUN curl -sL https://deb.nodesource.com/setup_13.x && \
-apt-get install -y nodejs npm && \
+RUN curl -fsSL https://deb.nodesource.com/setup_17.x | sudo -E bash - && \
+apt-get install -y nodejs && \
 npm install -g npm && \
-npm install -g npx
+npm install -g npx --force
 RUN npm install -g package-json-merge && \
 npm install -g nodemon
 
@@ -48,8 +49,8 @@ mv package2.json package.json && rm package.json.tmp
 COPY ./configs/tscompileoptions.json ./configs/
 # Copy the application files to the image
 COPY ./tsconfig.service.json ./
-COPY ./*.ts ./
 COPY ./*.html ./
+COPY ./*.ts ./
 COPY ./*.ejs ./
 # Build the code
 RUN npm run build

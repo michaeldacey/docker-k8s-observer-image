@@ -49,15 +49,65 @@ class WebserviceProcess
 		service.set('view engine', 'ejs');
 		service.set('views', __dirname);
 		
-		service.post('/poll', async (req, res) => {
+		service.post('/serviceaction', async (req, res) => {
 			try
 			{
-				let clusterIP: string = req.body["cluster_ip"];
-				let servicePort: string = req.body["service_port"];
+				//let srvtype: string = req.body["service-type"];
+				let srvaction: string = req.body["service-action"].toLowerCase();
+				let ip: string = req.body["ip"].trim();
+				let port: string = req.body["port"].trim();
+				let path: string = req.body["path"].trim();
+				let body: string = req.body["reqbody"].trim();
+				let response: any;
+				let fullpath: string = `http://${ip}:${port}`;
+				let data: any = body?JSON.parse(body):{};
 				
-				clusterIP = clusterIP.trim();
-				servicePort = servicePort.trim();
-			
+				fullpath += path?"/"+path:""; 
+				
+				switch(srvaction)
+				{
+				case "post":
+					response = await Axios.post(fullpath, data);
+					break;
+				case "patch":
+					response = await Axios.patch(fullpath, data);
+					break;
+				case "put":
+					response = await Axios.put(fullpath, data);
+					break;
+				case "delete":
+					response = await Axios.delete(fullpath);
+					break;
+				default: // get
+					response = await Axios.get(fullpath);
+					break;
+				}
+				
+				if(response.status == 200)
+				{
+					res.send(response.data);
+				}
+				else
+				{
+					res.status(400).send({
+						status: response.status
+					});
+				}
+			}
+			catch(e: any)
+			{
+				res.status(500).send({
+					error: e.message
+				});	
+			}
+		});
+				
+		service.post('/getpod', async (req, res) => {
+			try
+			{
+				let clusterIP: string = req.body["ip"].trim();
+				let servicePort: string = req.body["port"].trim();
+						
 				console.log("Polling "+`http://${clusterIP}:${servicePort}/poll`);
 				let pollResponse: any = await Axios.post(`http://${clusterIP}:${servicePort}/poll`, {});
 				console.log(`Poll response ${pollResponse.status}`);
@@ -74,7 +124,7 @@ class WebserviceProcess
 					});
 				}
 			}
-			catch(e)
+			catch(e: any)
 			{
 				res.status(500).send({
 					error: e.message

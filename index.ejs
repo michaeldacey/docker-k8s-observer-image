@@ -6,40 +6,43 @@
 </head>
 <body>
 
-<form action="" method="post">
 <p>Setup the service details. In Kubernetes, each service
 is given a unique IP address known as the Cluster IP and
 a service port number (aka &quot;port&quot;) that was specified during the service declaration.
-Alternatively, you may enter a Node IP address of the DNS name of the service.
-What you enter here depends on the type of Kubernetes service that you are testing.
 </p>
-<p>ClusterIP: internal service, using cluster IP or service name
-FQDN=&lt;service-name&gt;.&lt;namespace-name&gt;.svc.cluster.local or shorthand this by just using the service name</p>
-<p>Node IP: internal/external service, using IP of a node within the cluster</p>
-<p>Load Balancer: external service, use external IP address of service or </p>
-<br/><label for="ip-textbox">ClusterIP, NodeIP or DNS:</label>
-<input id="ip-textbox" name="ip-textbox" type="text" value="0.0.0.0" />
-<br/><label for="service-port-textbox">Service Port:</label>
-<input id="service-port-textbox" name="service-port-textbox" type="text" value="1339" />
-<br/><label for="service-path-textbox">Path (if reqd):</label>
-<span id="path-prefix"></span><input id="service-path-textbox" name="service-path-textbox" type="text" value="" />
-<br/>JSON Body:<input id="post-body-textbox" name="post-body-textbox" type="text" /><input id="post-button" type="button" value="POST"/>
-<br/><input id="get-button" type="button" value="GET"/>
-<br/>JSON Body:<input id="put-body-textbox" name="put-body-textbox" type="text" /><input id="put-button" type="button" value="PUT"/>
-<br/><input id="delete-button" type="button" value="DELETE"/>
+<form action="" method="post">
+<br/><label for="service-type">Service Type:</label>
+<select id="service-type" name="service-type">
+  <option value="clusterip">Cluster IP: Internal to Cluster: Container to Container</option>
+  <option value="nodeport">Node Port: Internal or external talk to pods via node</option>
+  <option value="lb">Load Balancer: External direct to a service which select node/pods</option>
+  <option value="ingress">Ingress: External to different services by URL (port 80 or 443)</option>
+  <option value="internal">Internal to Pod: Container to Container (not a service)</option>
+</select>
+<div id="service-details"></div>
+<select id="service-action" name="service-action">
+  <option value="get">GET</option>
+  <option value="post">POST</option>
+  <option value="put">PUT</option>
+  <option value="patch">PATCH</option>
+  <option value="delete">DELETE</option>
+</select>
+<br/><label for="path-textbox">Path (if reqd):</label>
+<span id="path-prefix"></span><input id="path-textbox" name="path-textbox" type="text" value="" />
+
+<br/><label for="req-body-textbox">JSON Body:</label><input id="req-body-textbox" name="req-body-textbox" type="text" disabled />
+<br/><input id="action-button" type="button" value="Send Request"/>
 </form>
 <div id="status" border=1>Status Waiting...</div>
-
 <br/>
+
 <form action="" method="post">
-<br/><label for="poll-ip-textbox">Poll IP:</label>
-<input id="poll-ip-textbox" name="poll-ip-textbox" type="text" value="0.0.0.0" disabled />
-<br/><label for="poll-port-textbox">Poll Port:</label>
-<input id="poll-port-textbox" name="poll-port-textbox" type="text" value="0" disabled />
-Via node:<input id="via-node-chkbox" name="via-node-chkbox" type="checkbox" value="Through node" />
-Via proxy:<input id="via-node-chkbox" name="via-node-chkbox" type="checkbox" value="Through node" />
-<br/><input id="start-poll-button" type="button" value="Start poll"/>
-<br/><input id="stop-poll-button" type="button" value="Stop poll"/>
+<br/><label for="getp-ip-textbox">Cluster IP (or container name within pod):</label>
+<input id="getp-ip-textbox" name="getp-ip-textbox" type="text" value="k8s-pod" />
+<br/><label for="getp-port-textbox">Service Port:</label>
+<input id="getp-port-textbox" name="getp-port-textbox" type="text" value="1339" />
+<input id="start-poll-button" type="button" value="Start Poll"/>
+<input id="stop-poll-button" type="button" value="Stop Poll" disabled />
 </form>
 <div id="pods">Pods&colon;<br/></div>
 

@@ -53,7 +53,7 @@ class WebserviceProcess
 			try
 			{
 				//let srvtype: string = req.body["service-type"];
-				let srvaction: string = req.body["service-action"].toLowerCase();
+				let srvaction: string = req.body["action"].toLowerCase();
 				let ip: string = req.body["ip"].trim();
 				let port: string = req.body["port"].trim();
 				let path: string = req.body["path"].trim();
@@ -63,6 +63,8 @@ class WebserviceProcess
 				let data: any = body?JSON.parse(body):{};
 				
 				fullpath += path?"/"+path:""; 
+				
+				console.log(`Action Req: ${srvaction} ${fullpath} Body:'${body}'`);
 				
 				switch(srvaction)
 				{

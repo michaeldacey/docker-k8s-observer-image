@@ -190,7 +190,7 @@ class IndexPage
 			cache: false,
 			type: "POST",
 			url: "serviceaction",
-			data: data,
+			data: JSON.stringify(data),
 			contentType: "application/json; charset=utf-8",  
 			dataType: "json",
 			success: this.Done,
